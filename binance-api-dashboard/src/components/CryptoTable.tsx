@@ -12,20 +12,21 @@ import {
   Pagination,
 } from '@mui/material';
 import { useRecoilState } from 'recoil';
-import { cryptoDataState, sortKeyState } from '../state/recoil';
+import { cryptoDataState, sortKeyState, sortDirectionState } from '../state/recoil';
 import { fetchCryptoData } from '../services/api';
 
 type ItemType = {
     symbol: string;
-    price: number;
-    changePercent: number;
+    lastPrice: number;
+    priceChangePercent: number;
     volume: number;
-    // 기타 필요한 속성들...
 };
 
 const CryptoTable = () => {
   const [cryptoData, setCryptoData] = useRecoilState(cryptoDataState);
   const [sortKey, setSortKey] = useRecoilState(sortKeyState);
+  const [sortDirection, setSortDirection] = useRecoilState(sortDirectionState);
+  
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10; // 페이지당 항목 수
   const [isLoading, setIsLoading] = useState(true); // 데이터 로딩 상태
@@ -34,9 +35,9 @@ const CryptoTable = () => {
     // Binance API에서 데이터 가져오기
     fetchCryptoData()
       .then((response) => {
-        const data = response.data;
         // 데이터를 cryptoData 상태에 저장
-        setCryptoData(data);
+        console.log(response);
+        setCryptoData(response);
         setIsLoading(false); // 데이터 로딩 완료 후 상태 변경
       })
       .catch((error) => {
@@ -47,14 +48,31 @@ const CryptoTable = () => {
 
   // 데이터 정렬 함수
   const sortByKey = (key: string) => {
-    // key를 기준으로 데이터를 정렬
+    // 현재 정렬 상태 확인
+    const currentSortDirection = sortDirection[key];
+  
+    // 정렬 키 업데이트
+    setSortKey(key);
+
+    // 데이터 정렬
     const sortedData = [...cryptoData].sort((a, b) => {
-      if (a[key] < b[key]) return -1;
-      if (a[key] > b[key]) return 1;
-      return 0;
+      const aValue = parseFloat(a[key]); 
+      const bValue = parseFloat(b[key]);
+
+      if (currentSortDirection === 'desc') {
+        return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+      } else {
+        return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+      }
     });
 
-    setSortKey(key);
+    // 정렬 방향 업데이트
+    setSortDirection((prevSortDirection) => ({
+      ...prevSortDirection,
+      [key]: currentSortDirection === 'asc' ? 'desc' : 'asc',
+    }));
+
+    // 정렬된 데이터로 업데이트
     setCryptoData(sortedData);
   };
 
@@ -81,20 +99,20 @@ const CryptoTable = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>심볼</TableCell>
-              <TableCell>
-                <Button onClick={() => sortByKey('price')}>
-                  가격 {sortKey === 'price' ? '▲' : ''}
+              <TableCell >심볼</TableCell>
+              <TableCell align="center">
+                <Button onClick={() => sortByKey('lastPrice')}>
+                  가격 {sortKey === 'lastPrice' ? (sortDirection['lastPrice'] == 'asc' ? '▲' : '▼') : ''}
                 </Button>
               </TableCell>
-              <TableCell>
-                <Button onClick={() => sortByKey('changePercent')}>
-                  상승률 {sortKey === 'changePercent' ? '▲' : ''}
+              <TableCell align="center">
+                <Button onClick={() => sortByKey('priceChangePercent')}>
+                  상승률 {sortKey === 'priceChangePercent' ? (sortDirection['priceChangePercent'] == 'asc' ? '▲' : '▼') : ''}
                 </Button>
               </TableCell>
-              <TableCell>
+              <TableCell align="center">
                 <Button onClick={() => sortByKey('volume')}>
-                  거래량 {sortKey === 'volume' ? '▲' : ''}
+                  거래량 {sortKey === 'volume' ? (sortDirection['volume'] == 'asc' ? '▲' : '▼') : ''}
                 </Button>
               </TableCell>
             </TableRow>
@@ -103,9 +121,17 @@ const CryptoTable = () => {
             {currentData.map((item: ItemType, index: number) => (
               <TableRow key={index}>
                 <TableCell>{item.symbol}</TableCell>
-                <TableCell>{item.price}</TableCell>
-                <TableCell>{item.changePercent}</TableCell>
-                <TableCell>{item.volume}</TableCell>
+                <TableCell align="center">{item.lastPrice}</TableCell>
+                <TableCell align="center">
+                  {
+                    item.priceChangePercent > 0 ? (
+                      <span style={{color: 'red'}}>{Math.round(item.priceChangePercent * 10) / 10}%</span>
+                    ) : (
+                      <span style={{color: 'blue'}}>{Math.round(item.priceChangePercent * 10) / 10}%</span>
+                    )
+                  }
+                </TableCell>
+                <TableCell align="center">{item.volume}</TableCell>
               </TableRow>
             ))}
           </TableBody>
