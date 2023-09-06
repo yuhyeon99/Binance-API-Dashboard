@@ -3,7 +3,6 @@ import { RecoilRoot } from 'recoil'; // RecoilRoot 추가
 import { CssBaseline, Container, AppBar, Toolbar, Typography, Grid } from '@mui/material';
 import CryptoTable from './components/CryptoTable';
 import SortButtons from './components/SortButtons';
-import Pagination from './components/Pagination';
 // import CryptoBoard from './components/CryptoBoard';
 
 function App() {
@@ -27,9 +26,6 @@ function App() {
             <Grid item xs={12}>
               <CryptoTable />
             </Grid>
-            {/* <Grid item xs={12}>
-              <Pagination />
-            </Grid> */}
           </Grid>
         </Container>
       </div>
