@@ -9,11 +9,16 @@ import {
   Paper,
   CircularProgress,
   Button,
+  Select,
+  MenuItem,
   Pagination,
+  Grid,
+  SelectChangeEvent 
 } from '@mui/material';
 import { useRecoilState } from 'recoil';
 import { cryptoDataState, sortKeyState, sortDirectionState } from '../state/recoil';
 import { fetchCryptoData } from '../services/api';
+import SortButtons from './SortButtons';
 
 type ItemType = {
     symbol: string;
@@ -22,13 +27,18 @@ type ItemType = {
     volume: number;
 };
 
+const itemsPerPageOptions = [10, 30, 50, 100]; // 옵션 값들
 const CryptoTable = () => {
   const [cryptoData, setCryptoData] = useRecoilState(cryptoDataState);
   const [sortKey, setSortKey] = useRecoilState(sortKeyState);
   const [sortDirection, setSortDirection] = useRecoilState(sortDirectionState);
   
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10; // 페이지당 항목 수
+  const [itemsPerPage, setItemsPerPage] = useState<number>(10);
+  const handleItemsPerPageChange = (event: SelectChangeEvent<number>) => {
+    const newValue = Number(event.target.value);
+    setItemsPerPage(newValue);
+  };
   const [isLoading, setIsLoading] = useState(true); // 데이터 로딩 상태
 
   useEffect(() => {
@@ -94,7 +104,28 @@ const CryptoTable = () => {
   const currentData = cryptoData.slice(startIndex, endIndex);
 
   return (
-    <div>
+    <div style={{marginTop:'30px'}}>
+      <Grid container alignItems="center">
+        <Grid item xs={6}>
+          <SortButtons />
+        </Grid>
+        <Grid item xs={6}>
+          {/* 이곳에 Select 컴포넌트 추가 */}
+          <Select
+            label="표시 항목 수"
+            value={itemsPerPage}
+            onChange={handleItemsPerPageChange}
+            style={{float:'right', height:'36px'}}
+          >
+            {itemsPerPageOptions.map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}개
+              </MenuItem>
+            ))}
+          </Select>
+        </Grid>
+      </Grid>
+
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
