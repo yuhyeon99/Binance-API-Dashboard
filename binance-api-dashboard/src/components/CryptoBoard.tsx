@@ -42,6 +42,9 @@ const CryptoBoard = () => {
     if (newPost.trim() !== '') {
       setPosts([newPost, ...posts]);
       setNewPost('');
+    }else{
+      alert('내용을 입력해주세요.');
+      return false;
     }
   };
 
@@ -63,6 +66,9 @@ const CryptoBoard = () => {
       setNewPost('');
       setSelectedPostIndex(null);
       setIsEditing(false);
+    }else{
+      alert('내용을 입력해주세요.');
+      return false;
     }
   };
 
