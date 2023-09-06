@@ -20,6 +20,12 @@ export const fetchCryptoData = async () => {
   }
 
   const data = response.data;
-  
-  return data;
+
+  // USDT로 거래되는 코인만 필터링
+  const usdtCoins = data.filter((ticker: Ticker) => {
+    // symbol에 'USDT'로 끝나는 항목만 필터링
+    return ticker.symbol.endsWith('USDT');
+  });
+
+  return usdtCoins;
 };
