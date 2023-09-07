@@ -25,7 +25,7 @@ const CryptoBoard = () => {
   const [itemsPerPage, setItemsPerPage] = useState(itemsPerPageOptions[0]);
   const [searchText, setSearchText] = useState(''); // 검색어 상태
 
-  // 게시물 로드 (localStorage에서)
+  // 게시물 로드
   useEffect(() => {
     const savedPosts = localStorage.getItem('cryptoPosts');
     if (savedPosts && JSON.parse(savedPosts).length > 0) {
@@ -33,7 +33,7 @@ const CryptoBoard = () => {
     }
   }, []);
 
-  // 게시물 저장 (localStorage에)
+  // 게시물 저장
   useEffect(() => {
     if (posts.length > 0) {
       localStorage.setItem('cryptoPosts', JSON.stringify(posts));
@@ -120,7 +120,7 @@ const CryptoBoard = () => {
         메모장
       </Typography>
       <Grid container spacing={1}>
-        <Grid item xs={11}> {/* 80% 너비 */}
+        <Grid item xs={11}>
           <TextField
             label="새 글 작성"
             variant="outlined"
@@ -130,7 +130,7 @@ const CryptoBoard = () => {
             onKeyPress={handleKeyPress}
           />
         </Grid>
-        <Grid item xs={1}> {/* 20% 너비 */}
+        <Grid item xs={1}>
           {isEditing ? (
               <Button
                 variant="contained"

@@ -7,10 +7,6 @@ interface Ticker {
   volume: number;
 }
 
-interface TickerResponse {
-  data: Ticker[];
-}
-
 export const fetchCryptoData = async () => {
   const response = await axios.get('https://api.binance.com/api/v3/ticker/24hr');
 
