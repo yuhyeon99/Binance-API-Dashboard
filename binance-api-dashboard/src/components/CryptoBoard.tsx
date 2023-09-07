@@ -9,6 +9,7 @@ import {
   ListItemSecondaryAction,
   IconButton,
 	Grid,
+  InputAdornment,
   Pagination,
 } from '@mui/material';
 
@@ -22,6 +23,7 @@ const CryptoBoard = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 번호
   const [itemsPerPage, setItemsPerPage] = useState(itemsPerPageOptions[0]);
+  const [searchText, setSearchText] = useState(''); // 검색어 상태
 
   // 게시물 로드 (localStorage에서)
   useEffect(() => {
@@ -93,10 +95,23 @@ const CryptoBoard = () => {
   // 현재 페이지에서 표시할 게시물 목록 계산
   const indexOfLastPost = currentPage * itemsPerPage;
   const indexOfFirstPost = indexOfLastPost - itemsPerPage;
-  const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
+  // 검색 결과에 따라 게시물 필터링
+  const filteredPosts = posts.filter((post) =>
+    post.toLowerCase().includes(searchText.toLowerCase())
+  );
+
+  const currentPosts = filteredPosts.slice(
+    indexOfFirstPost,
+    indexOfLastPost
+  );
 
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
+  };
+
+  const handleSearchTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(event.target.value);
+    setCurrentPage(1); // 검색 시 페이지 초기화
   };
 
   return (
@@ -137,9 +152,30 @@ const CryptoBoard = () => {
           )}
         </Grid>
       </Grid>
-      {posts.length === 0 ? (
-        <Typography variant="body1" color="textSecondary" style={{ marginTop: '20px' }}>
-          새로운 글을 추가해보세요!
+      <TextField
+            label="게시글 검색"
+            variant="outlined"
+            fullWidth
+            value={searchText}
+            onChange={handleSearchTextChange}
+            style={{ margin: '20px 0' }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <span role="img" aria-label="Search">
+                    🔍
+                  </span>
+                </InputAdornment>
+              ),
+            }}
+          />
+      {filteredPosts.length === 0 ? (
+        <Typography
+          variant="body1"
+          color="textSecondary"
+          style={{ marginTop: '20px' }}
+        >
+          검색된 데이터가 없습니다.
         </Typography>
       ) : (
         <>
@@ -185,9 +221,9 @@ const CryptoBoard = () => {
             ))}
           </List>
           {/* Pagination 컴포넌트 사용 */}
-          {posts.length > itemsPerPage && (
+          {filteredPosts.length > itemsPerPage && (
             <Pagination
-              count={Math.ceil(posts.length / itemsPerPage)}
+              count={Math.ceil(filteredPosts.length / itemsPerPage)}
               page={currentPage}
               onChange={(_, page) => paginate(page)}
               color="primary"
