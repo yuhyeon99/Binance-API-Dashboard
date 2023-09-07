@@ -100,10 +100,7 @@ const CryptoBoard = () => {
     post.toLowerCase().includes(searchText.toLowerCase())
   );
 
-  const currentPosts = filteredPosts.slice(
-    indexOfFirstPost,
-    indexOfLastPost
-  );
+  const currentPosts = filteredPosts.slice(indexOfFirstPost,indexOfLastPost);
 
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -127,7 +124,7 @@ const CryptoBoard = () => {
             fullWidth
             value={newPost}
             onChange={(e) => setNewPost(e.target.value)}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyPress}
           />
         </Grid>
         <Grid item xs={1}>

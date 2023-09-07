@@ -67,13 +67,16 @@ const CryptoTable = () => {
     // 정렬 키 업데이트
     setSortKey(key);
 
+    // 렌더링 최적화를 위해 복제한 후 업데이트된 객체를 다시 설정
     const sortedData = [...cryptoData].sort((a, b) => {
       const aValue = parseFloat(a[key]);
       const bValue = parseFloat(b[key]);
 
       if (currentSortDirection === 'desc') {
+        // 오름차순 정렬
         return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
       } else {
+        // 내림차순 정렬
         return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
       }
     });
