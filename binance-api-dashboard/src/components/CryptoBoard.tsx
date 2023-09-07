@@ -117,7 +117,7 @@ const CryptoBoard = () => {
   return (
     <div style={{marginBottom:'50px'}}>
       <Typography variant="h5" gutterBottom>
-        익명 게시판
+        메모장
       </Typography>
       <Grid container spacing={1}>
         <Grid item xs={11}> {/* 80% 너비 */}

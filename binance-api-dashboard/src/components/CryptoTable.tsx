@@ -42,9 +42,6 @@ const CryptoTable = () => {
     setItemsPerPage(newValue);
   };
   const [isLoading, setIsLoading] = useState(true); // 데이터 로딩 상태
-  // 검색어 관련 상태
-  // const [searchTerm, setSearchTerm] = useState<string>('');
-  // const [searchedData, setSearchedData] = useState<ItemType[]>([]);
   const [searchText, setSearchText] = useState('');
 
   useEffect(() => {
@@ -62,26 +59,12 @@ const CryptoTable = () => {
       });
   }, []); // 컴포넌트 마운트 시 한 번만 호출
 
-  // const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const term = event.target.value.toLowerCase();
-  //   setSearchTerm(term);
-
-  //   // 검색어가 비어있으면 검색 데이터 초기화
-  //   if (!term) {
-  //     setSearchedData([]);
-  //   } else {
-  //     // 검색어와 심볼을 비교하여 일치하는 데이터 필터링
-  //     const filteredData = cryptoData.filter(
-  //       (item) => item.symbol.toLowerCase().includes(term)
-  //     );
-  //     setSearchedData(filteredData);
-  //   }
-  // };
-
   // 데이터 정렬 함수
   const sortByKey = (key: string) => {
-    // const currentDataToSort = searchedData.length > 0 ? [...searchedData] : [...cryptoData]; // 검색 결과가 있는 경우 검색 데이터로 정렬
     const currentSortDirection = sortDirection[key];
+
+    // 정렬 키 업데이트
+    setSortKey(key);
 
     const sortedData = [...cryptoData].sort((a, b) => {
       const aValue = parseFloat(a[key]);
@@ -98,13 +81,7 @@ const CryptoTable = () => {
       ...prevSortDirection,
       [key]: currentSortDirection === 'asc' ? 'desc' : 'asc',
     }));
-
-    // if (searchedData.length > 0) {
-    //   setSearchedData(sortedData); // 검색 결과가 있는 경우 검색 데이터 업데이트
-    // } else {
-    //   setCryptoData(sortedData); // 검색 결과가 없는 경우 전체 데이터 업데이트
-    // }
-    // 정렬된 데이터로 업데이트
+    
     setCryptoData(sortedData);
   };
 

@@ -25,8 +25,8 @@ const SortButtons = () => {
     // cryptoDataState 업데이트
     setCryptoData((prevCryptoData) => {
       const sortedData = [...prevCryptoData].sort((a, b) => {
-        const aValue = a[key];
-        const bValue = b[key];
+        const aValue = parseFloat(a[key]);
+        const bValue = parseFloat(b[key]);
 
         if (currentSortDirection === 'desc') {
           return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
