@@ -16,6 +16,7 @@ import {
   SelectChangeEvent,
   InputAdornment,
   TextField,
+  Box,
 } from '@mui/material';
 import { useRecoilState } from 'recoil';
 import { cryptoDataState, sortKeyState, sortDirectionState } from '../state/recoil';
@@ -101,11 +102,6 @@ const CryptoTable = () => {
     setCurrentPage(page);
   };
 
-  // 데이터 로딩 중인 경우 로딩 화면 표시
-  if (isLoading) {
-    return <CircularProgress />;
-  }
-
   // 검색어 입력 시 페이지 초기화
   const handleSearchTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCurrentPage(1);
@@ -181,7 +177,15 @@ const CryptoTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {currentData.length === 0 ? (
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={4}>
+                  <Box display="flex" alignItems="center" justifyContent="center">
+                    <CircularProgress />
+                  </Box>
+                </TableCell>
+              </TableRow>
+            ) : currentData.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={4}>검색된 데이터가 없습니다.</TableCell>
               </TableRow>
@@ -191,17 +195,19 @@ const CryptoTable = () => {
                   <TableCell>{item.symbol}</TableCell>
                   <TableCell align="center">{item.lastPrice}</TableCell>
                   <TableCell align="center">
-                    {
-                      item.priceChangePercent > 0 ? (
-                        <span style={{color: 'red'}}>{Math.round(item.priceChangePercent * 10) / 10}%</span>
-                      ) : (
-                        <span style={{color: 'blue'}}>{Math.round(item.priceChangePercent * 10) / 10}%</span>
-                      )
-                    }
+                    {item.priceChangePercent > 0 ? (
+                      <span style={{ color: 'red' }}>
+                        {Math.round(item.priceChangePercent * 10) / 10}%
+                      </span>
+                    ) : (
+                      <span style={{ color: 'blue' }}>
+                        {Math.round(item.priceChangePercent * 10) / 10}%
+                      </span>
+                    )}
                   </TableCell>
                   <TableCell align="center">{item.volume}</TableCell>
                 </TableRow>
-                ))
+              ))
             )}
           </TableBody>
         </Table>
