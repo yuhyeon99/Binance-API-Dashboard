@@ -124,6 +124,7 @@ const CryptoTable = () => {
           <SortButtons />
         </Grid>
         <Grid item xs={5}>
+          {/* 입력 필드 생성 컴포넌트 */}
           <TextField
             label="심볼 검색"
             variant="outlined"
@@ -161,7 +162,7 @@ const CryptoTable = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell >심볼</TableCell>
+              <TableCell>심볼</TableCell>
               <TableCell align="center">
                 <Button onClick={() => sortByKey('lastPrice')}>
                   가격 {sortKey === 'lastPrice' ? (sortDirection['lastPrice'] == 'asc' ? '▲' : '▼') : ''}
